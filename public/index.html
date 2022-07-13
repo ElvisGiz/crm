@@ -1,0 +1,85 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        <style>
+            .form{
+                display: none;
+            }
+        </style>
+    </head>
+    <header>
+        <button id="account"></button>
+        <div id="registration" class="form">
+            <div>
+                <input id="login" type="text">
+                <input id="password" type="text">
+                <input name="post" type="submit" id="submit">
+            </div>
+        </div>
+    </header>
+    <body>
+        <main>
+
+        </main>
+    </body>
+    <footer>
+        <script>
+            class User{
+
+                constructor(login, password){
+                this.login = login
+                this.password = password
+                this.countOfOpenedTasks = 0
+                this.countOfClosedTasks = 0
+                this.tasks = 0
+                }
+
+                registration(login, password) {
+                    document.cookie = "session="+Math.random()+login+"; path=/; expires=Tue, 19 Jan 2038 03:14:07 GMT"
+                }
+                
+            }
+            let form = document.getElementById("registration")
+            let acc = document.getElementById("account")
+            let post = document.getElementById("submit")
+            let cookiesArray = document.cookie.split("; ")
+            let test = ""
+            function checkSession(){
+                 cookiesArray.forEach(element => {
+                    if(element.split('=')[0] == "session"){
+                        test = true
+                    }
+                        
+                });
+            }
+            checkSession()
+            console.log(test)
+            console.log(cookiesArray)
+            if(test == true){
+                console.log("acc")
+                 acc.innerHTML = "Аккаунт"
+             }else{
+                acc.innerHTML = "Зарегистрироваться/Войти"
+             }
+             acc.addEventListener("click", ()=>{
+                form.classList.toggle("form")
+             })
+             
+             
+             post.addEventListener("click", async ()=>{
+                let body = {
+                login: document.getElementById("login").value,
+                password: document.getElementById("password").value
+             }
+                let response = await fetch("http://localhost/", {
+                    method: "POST",
+                    headers: {
+                                 'Content-Type': 'application/json;charset=utf-8'
+                                },
+                    body: JSON.stringify(body)
+                })
+                console.log(response)
+             })
+        </script>
+    </footer>
+</html>
