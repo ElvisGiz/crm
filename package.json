@@ -4,12 +4,14 @@
   "description": "crm for tasks",
   "main": "index.js",
   "scripts": {
-    "nodemon": "node index.js",
+    "nodemon": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Elvis",
   "license": "ISC",
   "dependencies": {
+    "@fastify/cors": "^8.0.0",
+    "cors": "^2.8.5",
     "express": "^4.18.1",
     "fastify": "^4.2.1",
     "fs": "^0.0.1-security",

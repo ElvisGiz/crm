@@ -1,17 +1,31 @@
-const express = require('express');
-const app = express();
 const fs = require("fs")
-
-app.use(express.json());
-
-app.get("/", (req, res)=>{
+const fastify = require('fastify')()
+fastify.register(require('@fastify/cors'), { 
+    // put your options here
+  })
+  
+  fastify.get('/', function (request, reply) {
     let data = fs.readFileSync("./public/index.html", "utf-8")
-    res.send(data)
-})
-app.post("/", (req, res)=>{
-    console.log(req.body)
-    res.setHeader("Content-Type", "application/json")
-    res.send('POST request to the homepage');
-})
+    reply.type('text/html')
+    reply.send(data)
+  })
 
-app.listen("80", ()=>{console.log("http://localhost")})
+  fastify.post("/", function (request, reply) {
+    reply.type("aplication/json")
+    reply.send(request.body)
+  })
+
+  fastify.post("/db", function (request, reply) {
+    reply.type("aplication/json")
+    reply.send(request.body)
+  })
+  
+  // Run the server!
+  fastify.listen({ port: 80 }, function (err, address) {
+    console.log(address)
+    if (err) {
+      fastify.log.error(err)
+      process.exit(1)
+    }
+    // Server is now listening on ${address}
+  })

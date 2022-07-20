@@ -11,74 +11,116 @@
         <button id="account"></button>
         <div id="registration" class="form">
             <div>
-                <input id="login" type="text">
-                <input id="password" type="text">
-                <input name="post" type="submit" id="submit">
+                <input id="name" type="text" placeholder="Название">
+                <input id="priority" type="number" placeholder="Приоритет от 1 до 10">
+                <input name="post" type="submit" id="submit" value="Создать задачу">
             </div>
+            <textarea id="text" placeholder="Описание задачи" style="width: 177px"></textarea>
         </div>
+        <div id="final"></div>
     </header>
     <body>
         <main>
-
+            <h2>Задачи:</h2>
+            <section id="tasks">
+            </section>
         </main>
     </body>
     <footer>
         <script>
-            class User{
-
-                constructor(login, password){
-                this.login = login
-                this.password = password
-                this.countOfOpenedTasks = 0
-                this.countOfClosedTasks = 0
-                this.tasks = 0
-                }
-
-                registration(login, password) {
-                    document.cookie = "session="+Math.random()+login+"; path=/; expires=Tue, 19 Jan 2038 03:14:07 GMT"
-                }
-                
-            }
+            
+            let tasks = 
+                [
+                    {
+                        name: "Написать парсер",
+                        date: "10.09.2021",
+                        text: "Текст задачи",
+                        priority: 10,
+                        spentTime: 0
+                    },
+                    {
+                        name: "Создать срм",
+                        date: "20.09.2021",
+                        text: "Текст задачи",
+                        priority: 1,
+                        spentTime: 0
+                    },
+                    {
+                        name: "Создать срм",
+                        date: "20.09.2021",
+                        text: "Текст задачи",
+                        priority: 2,
+                        spentTime: 0
+                    }
+                ]
+            tasks.sort((a, b) => b.priority - a.priority)   
+            //сделать общий метод фетча для всех задач и отправлять уникальный айдишник вместе с запросом
+            tasks.forEach((elem, index)=>{
+                let article = document.createElement('article');
+                article.innerHTML = `<h4><span>${index+1}. </span>${elem.name}</h4>
+                    <div>Приоритет: <span>${elem.priority}</span></div>
+                    <div>Дата создания: <span>${elem.date}</span></div>
+                    <p>${elem.text}</p>
+                    <span>Затрекать время</span>
+                    <input type="number" id="spentTime${index}" value="${elem.spentTime}">ч.
+                    <button id="done${index}">Завершить</button>`
+                document.getElementById("tasks").appendChild(article)
+                document.getElementById("done"+index).addEventListener("change", ()=>{
+                fetch("http://localhost/", {
+                    method: "POST",
+                    headers: {
+    'Content-Type': 'application/json;charset=utf-8'
+  },
+                    body: JSON.stringify({
+                        id: index,
+                        value: document.getElementById("done"+index).value
+                    })
+                })
+                console.log("кнопка завершить на задаче "+document.getElementById("done"+index).value)
+            })
+                document.getElementById("spentTime"+index).addEventListener("change", ()=>{
+                fetch("http://localhost/", {
+                    method: "POST",
+                    headers: {
+    'Content-Type': 'application/json;charset=utf-8'
+  },
+                    body: JSON.stringify({
+                        id: index,
+                        value: document.getElementById("spentTime"+index).value
+                    })
+                })
+                console.log(document.getElementById("spentTime"+index).value)
+            })
+            })
+            
+        
+            let final = document.getElementById("final")
             let form = document.getElementById("registration")
             let acc = document.getElementById("account")
             let post = document.getElementById("submit")
-            let cookiesArray = document.cookie.split("; ")
-            let test = ""
-            function checkSession(){
-                 cookiesArray.forEach(element => {
-                    if(element.split('=')[0] == "session"){
-                        test = true
-                    }
-                        
-                });
-            }
-            checkSession()
-            console.log(test)
-            console.log(cookiesArray)
-            if(test == true){
-                console.log("acc")
-                 acc.innerHTML = "Аккаунт"
-             }else{
-                acc.innerHTML = "Зарегистрироваться/Войти"
-             }
+            acc.innerHTML = "Добавить задачу"
+             
              acc.addEventListener("click", ()=>{
                 form.classList.toggle("form")
+                final.innerText = ""
              })
              
              
              post.addEventListener("click", async ()=>{
                 let body = {
-                login: document.getElementById("login").value,
-                password: document.getElementById("password").value
+                name: document.getElementById("name").value,
+                priority: document.getElementById("priority").value,
+                text: document.getElementById("text").value
+
              }
-                let response = await fetch("http://localhost/", {
+                let response = await fetch("http://localhost/db", {
                     method: "POST",
                     headers: {
-                                 'Content-Type': 'application/json;charset=utf-8'
-                                },
+    'Content-Type': 'application/json;charset=utf-8'
+  },
                     body: JSON.stringify(body)
                 })
-                console.log(response)
+                final.innerText = await response.text()
              })
         </script>
     </footer>
