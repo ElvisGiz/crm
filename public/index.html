@@ -65,32 +65,7 @@
                     <input type="number" id="spentTime${index}" value="${elem.spentTime}">ч.
                     <button id="done${index}">Завершить</button>`
                 document.getElementById("tasks").appendChild(article)
-                document.getElementById("done"+index).addEventListener("change", ()=>{
-                fetch("http://localhost/", {
-                    method: "POST",
-                    headers: {
-    'Content-Type': 'application/json;charset=utf-8'
-  },
-                    body: JSON.stringify({
-                        id: index,
-                        value: document.getElementById("done"+index).value
-                    })
-                })
-                console.log("кнопка завершить на задаче "+document.getElementById("done"+index).value)
-            })
-                document.getElementById("spentTime"+index).addEventListener("change", ()=>{
-                fetch("http://localhost/", {
-                    method: "POST",
-                    headers: {
-    'Content-Type': 'application/json;charset=utf-8'
-  },
-                    body: JSON.stringify({
-                        id: index,
-                        value: document.getElementById("spentTime"+index).value
-                    })
-                })
-                console.log(document.getElementById("spentTime"+index).value)
-            })
+                
             })
             
         
@@ -108,9 +83,10 @@
              
              post.addEventListener("click", async ()=>{
                 let body = {
-                name: document.getElementById("name").value,
+                title: document.getElementById("name").value,
                 priority: document.getElementById("priority").value,
-                text: document.getElementById("text").value
+                text: document.getElementById("text").value,
+                dateofcreate: new Date()
 
              }
                 let response = await fetch("http://localhost/db", {
