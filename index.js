@@ -27,6 +27,14 @@ fastify.register(require('@fastify/cors'), {
       
     
   })
+  .get("/db", function (request, reply) {
+    db.query("select", "",(res)=>{
+      reply.send( res)
+      console.log( "ответ модуля"+" "+res)
+    })
+    
+      console.log("ЗАПРОС")
+  })
   // Run the server!
   fastify.listen({ port: 80 }, function (err, address) {
     console.log(address)

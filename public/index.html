@@ -28,31 +28,13 @@
     </body>
     <footer>
         <script>
-            
-            let tasks = 
-                [
-                    {
-                        name: "Написать парсер",
-                        date: "10.09.2021",
-                        text: "Текст задачи",
-                        priority: 10,
-                        spentTime: 0
-                    },
-                    {
-                        name: "Создать срм",
-                        date: "20.09.2021",
-                        text: "Текст задачи",
-                        priority: 1,
-                        spentTime: 0
-                    },
-                    {
-                        name: "Создать срм",
-                        date: "20.09.2021",
-                        text: "Текст задачи",
-                        priority: 2,
-                        spentTime: 0
-                    }
-                ]
+            fetch('http://localhost/db')
+  .then((response) => {
+    return response.json();
+  })
+  .then((data) => {
+    console.log(data);
+  });
             tasks.sort((a, b) => b.priority - a.priority)   
             //сделать общий метод фетча для всех задач и отправлять уникальный айдишник вместе с запросом
             tasks.forEach((elem, index)=>{
