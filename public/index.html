@@ -22,36 +22,71 @@
     <body>
         <main>
             <h2>Задачи:</h2>
+            <div id="deleteTask"></div>
             <section id="tasks">
             </section>
         </main>
     </body>
     <footer>
         <script>
-            fetch('http://localhost/db')
-  .then((response) => {
-    return response.json();
-  })
-  .then((data) => {
-    console.log(data);
-  });
-            tasks.sort((a, b) => b.priority - a.priority)   
+            let final = document.getElementById("final")
+            
+         function doneTask(id){
+            let response =  fetch("http://localhost/db", {
+                    method: "POST",
+                    headers: {
+    'Content-Type': 'application/json;charset=utf-8',
+    query: 'close'
+  },
+                    body: JSON.stringify({id: id, dateofclose: new Date().toLocaleString()})
+                })
+                setTimeout(location.reload(), 15000);
+                    
+                
+
+        }
+        async function getData(){
+                let response1 = await fetch('http://localhost/db')
+                let tasks = await response1.json()
+                console.log(tasks) 
+            
+            
+            tasks.sort((a, b) => b.priority - a.priority)
             //сделать общий метод фетча для всех задач и отправлять уникальный айдишник вместе с запросом
             tasks.forEach((elem, index)=>{
                 let article = document.createElement('article');
-                article.innerHTML = `<h4><span>${index+1}. </span>${elem.name}</h4>
+                article.innerHTML = `<div id="article${elem.id}"><h4><span>${index+1}. </span>${elem.title}</h4>
                     <div>Приоритет: <span>${elem.priority}</span></div>
-                    <div>Дата создания: <span>${elem.date}</span></div>
+                    <div>Дата создания: <span>${elem.dateofcreate}</span></div>
                     <p>${elem.text}</p>
-                    <span>Затрекать время</span>
-                    <input type="number" id="spentTime${index}" value="${elem.spentTime}">ч.
-                    <button id="done${index}">Завершить</button>`
+                    <p>Потрачено времени: ${elem.spenttime==null? 0 : elem.spenttime}</p>
+                    <span id="spentTime${elem.id}">Затрекать время</span>
+                    <input type="number" id="spentTimeValue${elem.id}" value=${elem.spenttime}>ч.
+                    <button id="done${elem.id}" onclick="doneTask(${elem.id})">Завершить</button></div>`
                 document.getElementById("tasks").appendChild(article)
+                document.getElementById("spentTime"+elem.id).addEventListener("click", ()=>{
+                    console.log("change")
+                    document.getElementById("spentTime"+elem.id).insertAdjacentHTML('afterend', `<button onclick='track(${elem.id}, "spentTimeValue${elem.id}")'>Затрекать</button>`);
+                })
                 
             })
-            
-        
-            let final = document.getElementById("final")
+        }
+
+        getData()
+        function track(id, dom){
+            let response =  fetch("http://localhost/db", {
+                    method: "POST",
+                    headers: {
+    'Content-Type': 'application/json;charset=utf-8',
+    query: 'track'
+  },
+                    body: JSON.stringify({id: id, spenttime: document.getElementById(dom).value})
+                })
+                setTimeout(location.reload(), 15000);
+                    
+                
+
+        }
             let form = document.getElementById("registration")
             let acc = document.getElementById("account")
             let post = document.getElementById("submit")
@@ -63,22 +98,23 @@
              })
              
              
-             post.addEventListener("click", async ()=>{
+             post.addEventListener("click",  ()=>{
                 let body = {
                 title: document.getElementById("name").value,
                 priority: document.getElementById("priority").value,
                 text: document.getElementById("text").value,
-                dateofcreate: new Date()
+                dateofcreate: new Date().toLocaleString()
 
              }
-                let response = await fetch("http://localhost/db", {
+                let response =  fetch("http://localhost/db", {
                     method: "POST",
                     headers: {
-    'Content-Type': 'application/json;charset=utf-8'
+    'Content-Type': 'application/json;charset=utf-8',
+    query: 'create'
   },
                     body: JSON.stringify(body)
                 })
-                final.innerText = await response.text()
+                setTimeout(location.reload(), 15000);
              })
         </script>
     </footer>

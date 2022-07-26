@@ -1,15 +1,15 @@
-const { Client } = require('pg')
-const client = new Client({
+const { Client, Pool } = require('pg')
+const client = new Pool({
     user: 'postgres',
     host: 'localhost',
     database: 'tasks',
     password: 'admin347',
     port: 5432,
   })
-
+client.connect()
 function query(query, data, callback){
+    //if(client)
     
-    client.connect()
     let queryText = ``
     switch(query){
         case "create":
@@ -20,23 +20,29 @@ function query(query, data, callback){
         case "comment":
             queryText = `UPDATE tasks SET comment = '${data.comment}' WHERE id='${data.id}';`
             break;
+        case "track":
+            queryText = `UPDATE tasks SET spenttime = '${data.spenttime}' WHERE id='${data.id}';`
+            break;    
         case "close":
             queryText = `UPDATE tasks
             SET dateofclose = '${data.dateofclose}' WHERE id='${data.id}';`
             break;    
         case "select":
-            queryText = `SELECT * FROM tasks`
+            queryText = `SELECT * FROM tasks WHERE dateofclose is NULL`
             break;      
     }    
     
     client.query(queryText, (err, res) => {
-        if(err){
-            console.log(err)
-        }else{
-            callback(res.rows)
-            console.log("сообщение от модуля"+" "+res.rows)
-        }
-        client.end()
-    })
+            if(err){
+                console.log(err)
+            }else{
+                if(callback){
+                    callback(res.rows)
+                }
+            }
+            
+        })
+        
+    
 }
 module.exports.query = query

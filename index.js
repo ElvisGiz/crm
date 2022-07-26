@@ -19,21 +19,20 @@ fastify.register(require('@fastify/cors'), {
   fastify.post("/db", function (request, reply) {
     reply.type("aplication/json")
     try{
-      db.query("create", request.body)
-      reply.send(request.body)
+      db.query(request.headers.query, request.body)
     }catch(err){
       reply.send(err)
     }
-      
+    console.log("ПОСТ ДБ ЗАПРОС")
     
   })
   .get("/db", function (request, reply) {
+    reply.type("aplication/json")
     db.query("select", "",(res)=>{
       reply.send( res)
-      console.log( "ответ модуля"+" "+res)
     })
     
-      console.log("ЗАПРОС")
+      console.log("ГЕТ ДБ ЗАПРОС")
   })
   // Run the server!
   fastify.listen({ port: 80 }, function (err, address) {
