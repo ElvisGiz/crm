@@ -60,7 +60,12 @@
                     <div>Дата создания: <span>${elem.dateofcreate}</span></div>
                     <p>${elem.text}</p>
                     <p>Потрачено времени: ${elem.spenttime==null? 0 : elem.spenttime}</p>
-                    <span id="spentTime${elem.id}">Затрекать время</span>
+                    <button id="comment${elem.id}">Оставить заметку</button>
+                    
+                
+                    ${elem.comment ? '<br>Заметки: <br>'+elem.comment+'<br>' : ''}
+                    
+                    <button id="spentTime${elem.id}">Затрекать время</button>
                     <input type="number" id="spentTimeValue${elem.id}" value=${elem.spenttime}>ч.
                     <button id="done${elem.id}" onclick="doneTask(${elem.id})">Завершить</button></div>`
                 document.getElementById("tasks").appendChild(article)
@@ -68,11 +73,29 @@
                     console.log("change")
                     document.getElementById("spentTime"+elem.id).insertAdjacentHTML('afterend', `<button onclick='track(${elem.id}, "spentTimeValue${elem.id}")'>Затрекать</button>`);
                 })
+                document.getElementById("comment"+elem.id).addEventListener("click", ()=>{
+                    console.log("comment")
+                    document.getElementById("comment"+elem.id).insertAdjacentHTML('afterend', `<textarea id='commentVal${elem.id}'></textarea><button onclick='comment(${elem.id}, "commentVal${elem.id}")'>Сохранить</button>`);
+                })
                 
             })
         }
 
         getData()
+        function comment(id, dom){
+            let response =  fetch("http://localhost/db", {
+                    method: "POST",
+                    headers: {
+    'Content-Type': 'application/json;charset=utf-8',
+    query: 'comment'
+  },
+                    body: JSON.stringify({id: id, comment: document.getElementById(dom).value})
+                })
+                setTimeout(location.reload(), 15000);
+                    
+                
+
+        }
         function track(id, dom){
             let response =  fetch("http://localhost/db", {
                     method: "POST",
