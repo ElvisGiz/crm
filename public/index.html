@@ -12,7 +12,7 @@
         <div id="registration" class="form">
             <div>
                 <input id="name" type="text" placeholder="Название">
-                <input id="priority" type="number" placeholder="Приоритет от 1 до 10">
+                <input id="priority" type="number" placeholder="Приоритет от 1 до 10" min="1" max="10">
                 <input name="post" type="submit" id="submit" value="Создать задачу">
             </div>
             <textarea id="text" placeholder="Описание задачи" style="width: 177px"></textarea>
@@ -66,12 +66,12 @@
                     ${elem.comment ? '<br>Заметки: <br>'+elem.comment+'<br>' : ''}
                     
                     <button id="spentTime${elem.id}">Затрекать время</button>
-                    <input type="number" id="spentTimeValue${elem.id}" value=${elem.spenttime}>ч.
+                    
                     <button id="done${elem.id}" onclick="doneTask(${elem.id})">Завершить</button></div>`
                 document.getElementById("tasks").appendChild(article)
                 document.getElementById("spentTime"+elem.id).addEventListener("click", ()=>{
                     console.log("change")
-                    document.getElementById("spentTime"+elem.id).insertAdjacentHTML('afterend', `<button onclick='track(${elem.id}, "spentTimeValue${elem.id}")'>Затрекать</button>`);
+                    document.getElementById("spentTime"+elem.id).insertAdjacentHTML('afterend', `<input type="number" id="spentTimeValue${elem.id}" value=${elem.spenttime} min="0">ч.<button onclick='track(${elem.id}, "spentTimeValue${elem.id}")'>Затрекать</button>`);
                 })
                 document.getElementById("comment"+elem.id).addEventListener("click", ()=>{
                     console.log("comment")
