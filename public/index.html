@@ -75,21 +75,27 @@
                 })
                 document.getElementById("comment"+elem.id).addEventListener("click", ()=>{
                     console.log("comment")
-                    document.getElementById("comment"+elem.id).insertAdjacentHTML('afterend', `<textarea id='commentVal${elem.id}'></textarea><button onclick='comment(${elem.id}, "commentVal${elem.id}")'>Сохранить</button>`);
+                    document.getElementById("comment"+elem.id).insertAdjacentHTML('afterend', `<textarea id='commentVal${elem.id}'></textarea><button onclick='comment(${elem.id}, "commentVal${elem.id}","${elem.uuid}")'>Сохранить</button>`);
                 })
                 
             })
         }
-
+        
+        async function getComments(){
+                let response1 = await fetch('http://localhost/db/comments')
+                let comments = await response1.json()
+                console.log(comments) 
+        }
+        getComments()
         getData()
-        function comment(id, dom){
+        function comment(id, dom, uuid){
             let response =  fetch("http://localhost/db", {
                     method: "POST",
                     headers: {
     'Content-Type': 'application/json;charset=utf-8',
     query: 'comment'
   },
-                    body: JSON.stringify({id: id, comment: document.getElementById(dom).value})
+                    body: JSON.stringify({id: id, comment: document.getElementById(dom).value, uuid: uuid})
                 })
                 setTimeout(location.reload(), 15000);
                     
